@@ -40,6 +40,7 @@ var timerInterval;
 const timer = document.getElementById("timer");
 const startRaceButton = document.getElementById("startRaceButton");
 const stopRaceButton = document.getElementById("stopRaceButton");
+const fastestlaptimeElem = document.getElementById("fastestlaptime");
 
 const rssiBuffer = [];
 var rssiValue = 0;
@@ -50,6 +51,7 @@ var rssiSeries = new TimeSeries();
 var rssiCrossingSeries = new TimeSeries();
 var maxRssiValue = enterRssi + 10;
 var minRssiValue = exitRssi - 10;
+var arrayLaps = [];
 
 var audioEnabled = false;
 var speakObjsQueue = [];
@@ -341,6 +343,7 @@ function addLap(lapStr) {
     cell4.innerHTML = last3lapStr + " s";
   }
 
+  var speakText = "";
   switch (announcerSelect.options[announcerSelect.selectedIndex].value) {
     case "beep":
       beep(100, 330, "square");
@@ -350,23 +353,21 @@ function addLap(lapStr) {
         queueSpeak("<p>Hole Shot<p>");
       } else {
         const lapNoStr = pilotName + " Lap " + lapNo + ", ";
-        const text = "<p>" + lapNoStr + lapStr.replace(".", ",") + "</p>";
-        queueSpeak(text);
+        speakText = "<p>" + lapNoStr + lapStr.replace(".", ",") + "</p>";
       }
       break;
     case "2lap":
       if (lapNo == 0) {
         queueSpeak("<p>Hole Shot<p>");
       } else if (last2lapStr != "") {
-        const text2 = "<p>" + pilotName + " 2 laps " + last2lapStr.replace(".", ",") + "</p>";
-        queueSpeak(text2);
+        speakText = "<p>" + pilotName + " 2 laps " + last2lapStr.replace(".", ",") + "</p>";
       }
       break;
     case "3lap":
       if (lapNo == 0) {
         queueSpeak("<p>Hole Shot<p>");
       } else if (last3lapStr != "") {
-        const text3 = "<p>" + pilotName + " 3 laps " + last3lapStr.replace(".", ",") + "</p>";
+        speakText = "<p>" + pilotName + " 3 laps " + last3lapStr.replace(".", ",") + "</p>";
         queueSpeak(text3);
       }
       break;
@@ -374,6 +375,17 @@ function addLap(lapStr) {
       break;
   }
   lapTimes.push(newLap);
+
+  const timelap = parseFloat(lapStr).toFixed(2);
+  arrayLaps.push(timelap);
+  const fastestlap = Math.min(...arrayLaps);
+
+  if (fastestlap.toString() === timelap.toString()) {
+      fastestlaptimeElem.innerText = "Fastest Lap Time: " + fastestlap + "s";
+      speakText = "record, " + speakText;
+  }
+
+  queueSpeak(speakText);
 }
 
 function startTimer() {
@@ -495,6 +507,8 @@ function clearLaps() {
   }
   lapNo = -1;
   lapTimes = [];
+  arrayLaps = [];
+  fastestlaptimeElem.innerText = "Fastest Lap Time: --";
 }
 
 if (!!window.EventSource) {
