@@ -56,16 +56,41 @@ var arrayLaps = [];
 var audioEnabled = false;
 var speakObjsQueue = [];
 
+function setLapshistory(lapsHistory) {
+    let lapTable = document.getElementById('lapTable');
+
+    if(lapsHistory.length > 0) {
+        lapsHistory.forEach((lap, index) => {
+            var lapFormated = (parseFloat(lap) / 1000).toFixed(2);
+
+            let newLine = lapTable.insertRow();
+            newLine.insertCell(0).innerHTML = index + 1;
+            newLine.insertCell(1).innerHTML = lapFormated;
+            newLine.insertCell(2).innerHTML = '-';
+            newLine.insertCell(3).innerHTML = '-';
+
+            arrayLaps.push(lapFormated);
+
+            const fastestlap = Math.min(...arrayLaps).toFixed(2);
+            if (fastestlap.toString() === lapFormated) {
+                fastestlaptimeElem.innerText = "Fastest Lap Time: " + fastestlap + "s";
+            }
+        });
+    }
+}
+
 onload = function (e) {
-  config.style.display = "block";
-  race.style.display = "none";
-  calib.style.display = "none";
-  ota.style.display = "none";
+    config.style.display = "block";
+    race.style.display = "none";
+    calib.style.display = "none";
+    ota.style.display = "none";
+
+  var batteryElem = document.getElementById("battery")
 
   fetch("/config")
     .then((response) => response.json())
     .then((config) => {
-      console.log(config);
+      console.log({config});
       setBandChannelIndex(config.freq);
       minLapInput.value = (parseFloat(config.minLap) / 10).toFixed(1);
       updateMinLap(minLapInput, minLapInput.value);
@@ -86,19 +111,32 @@ onload = function (e) {
       startRaceButton.disabled = false;
       clearInterval(timerInterval);
       timer.innerHTML = "00:00:00 s";
-      clearLaps();
       createRssiChart();
+      setLapshistory(config.lapsHistory);
     });
-};
+
+  fetch("/status")
+    .then((response) => response.text())
+    .then((response) => {
+      console.log({response});
+
+      const batteryVoltageMatch = response.match(/Battery Voltage:\s*([\d.]+v)/);
+      const batteryVoltage = batteryVoltageMatch ? batteryVoltageMatch[1] : null;
+      batteryElem.innerText = "Battery Voltage: " + batteryVoltage;
+    })
+    .catch((error) => {
+      console.log("error fetch /status");
+    });
+}
 
 function addRssiPoint() {
   if (calib.style.display != "none") {
     rssiChart.start();
     if (rssiBuffer.length > 0) {
       rssiValue = parseInt(rssiBuffer.shift());
-      if (crossing && rssiValue < exitRssi) {
+      if (crossing && (rssiValue < exitRssi)) {
         crossing = false;
-      } else if (!crossing && rssiValue > enterRssi) {
+      } else if (!crossing && (rssiValue > enterRssi)) {
         crossing = true;
       }
       maxRssiValue = Math.max(maxRssiValue, rssiValue);
@@ -302,6 +340,10 @@ function beep(duration, frequency, type) {
 }
 
 function addLap(lapStr) {
+
+  const timelap = parseFloat(lapStr).toFixed(2);
+  arrayLaps.push(timelap);
+
   const pilotName = pilotNameInput.value;
   var last2lapStr = "";
   var last3lapStr = "";
@@ -361,8 +403,6 @@ function addLap(lapStr) {
   }
   lapTimes.push(newLap);
 
-  const timelap = parseFloat(lapStr).toFixed(2);
-  arrayLaps.push(timelap);
   const fastestlap = Math.min(...arrayLaps).toFixed(2);
 
   if (fastestlap.toString() === timelap.toString()) {
@@ -494,6 +534,16 @@ function clearLaps() {
   lapTimes = [];
   arrayLaps = [];
   fastestlaptimeElem.innerText = "Fastest Lap Time: --";
+
+  fetch('/eraseLapsHistory', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    }
+  })
+    .then(response => response.json())
+    .then(response => console.log('/eraseLapsHistory:' + JSON.stringify(response)))
 }
 
 if (!!window.EventSource) {

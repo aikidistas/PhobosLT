@@ -60,6 +60,7 @@ void Webserver::sendLaptimeEvent(uint32_t lapTime) {
     if (!servicesStarted) return;
     char buf[16];
     snprintf(buf, sizeof(buf), "%u", lapTime);
+    conf->addNewLapHistory(lapTime);
     events.send(buf, "lap");
 }
 
@@ -321,6 +322,11 @@ Battery Voltage:\t%0.1fv";
         conf->fromJson(jsonObj);
         request->send(200, "application/json", "{\"status\": \"OK\"}");
         led->on(200);
+    });
+
+    server.on("/eraseLapsHistory", HTTP_POST, [this](AsyncWebServerRequest *request) {
+        conf->eraseLapsHistory();
+        request->send(200, "application/json", "{\"status\": \"OK\"}");
     });
 
     server.serveStatic("/", LittleFS, "/").setCacheControl("max-age=600");
