@@ -123,6 +123,13 @@ onload = function (e) {
       const batteryVoltageMatch = response.match(/Battery Voltage:\s*([\d.]+v)/);
       const batteryVoltage = batteryVoltageMatch ? batteryVoltageMatch[1] : null;
       batteryElem.innerText = "Battery Voltage: " + batteryVoltage;
+
+      const lapTimerStateMatch = response.match(/LapTimerState:\s*([\d.])/);
+      const lapTimerState = lapTimerStateMatch ? lapTimerStateMatch[1] : null;
+      if(lapTimerState > 0) {
+        startRace(false);
+        openTab({ currentTarget: document.getElementById("nav-link-race") }, 'race');
+      }
     })
     .catch((error) => {
       console.log("error fetch /status");
@@ -490,17 +497,19 @@ function doSpeak(obj) {
   $(obj).articulate("rate", announcerRate).articulate('speak');
 }
 
-async function startRace() {
+async function startRace(beepOn = true) {
   //stopRace();
   startRaceButton.disabled = true;
-  queueSpeak('<p>Starting race in less than five</p>');
-  await new Promise((r) => setTimeout(r, 2000));
-  beep(1, 1, "square"); // needed for some reason to make sure we fire the first beep
-  beep(100, 440, "square");
-  await new Promise((r) => setTimeout(r, 1000));
-  beep(100, 440, "square");
-  await new Promise((r) => setTimeout(r, 1000));
-  beep(500, 880, "square");
+  if(beepOn) {
+    queueSpeak('<p>Starting race in less than five</p>');
+    await new Promise((r) => setTimeout(r, 2000));
+    beep(1, 1, "square"); // needed for some reason to make sure we fire the first beep
+    beep(100, 440, "square");
+    await new Promise((r) => setTimeout(r, 1000));
+    beep(100, 440, "square");
+    await new Promise((r) => setTimeout(r, 1000));
+    beep(500, 880, "square");
+  }
   startTimer();
   stopRaceButton.disabled = false;
 }
