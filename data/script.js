@@ -62,8 +62,6 @@ onload = function (e) {
   calib.style.display = "none";
   ota.style.display = "none";
 
-  var batteryElem = document.getElementById("battery");
-
   fetch("/config")
     .then((response) => response.json())
     .then((config) => {
@@ -90,19 +88,6 @@ onload = function (e) {
       timer.innerHTML = "00:00:00 s";
       clearLaps();
       createRssiChart();
-    });
-
-  fetch("/status")
-    .then((response) => response.text())
-    .then((response) => {
-      console.log({response});
-
-      const batteryVoltageMatch = response.match(/Battery Voltage:\s*([\d.]+v)/);
-      const batteryVoltage = batteryVoltageMatch ? batteryVoltageMatch[1] : null;
-      batteryElem.innerText = "Battery Voltage: " + batteryVoltage;
-    })
-    .catch((error) => {
-      console.log("error fetch /status");
     });
 };
 
