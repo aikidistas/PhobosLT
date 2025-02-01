@@ -16,7 +16,7 @@ static AsyncWebServer server(80);
 static AsyncEventSource events("/events");
 
 static const char *wifi_hostname = "nevalt";
-static const char *wifi_ap_ssid_prefix = "nevaLapTimer";
+static const char *wifi_ap_ssid_prefix = "nevaLT";
 static const char *wifi_ap_password = "nevalt";
 static const char *wifi_ap_address = "20.0.0.1";
 String wifi_ap_ssid;
