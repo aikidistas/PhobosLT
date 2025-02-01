@@ -15,12 +15,12 @@
     <header>
       <nav>
         <div class="logo">
-          <img src="favicon.ico" alt="PLT" width="64" />
+          <img src="favicon.ico" alt="PLT" width="32" />
           <h1>Neva LapTimer</h1>
         </div>
       </nav>
       <ul class="nav-links">
-        <li><a id="nav-link-config" class="tablinks active" onclick="openTab(event, 'config')">Configuration</a></li>
+        <li><a id="nav-link-config" class="tablinks active" onclick="openTab(event, 'config')">Config</a></li>
         <li><a id="nav-link-race" class="tablinks" onclick="openTab(event, 'race')">Race</a></li>
         <li><a id="nav-link-calib" class="tablinks" onclick="openTab(event, 'calib')">Calibration</a></li>
         <li><a id="nav-link-ota" class="tablinks" onclick="openTab(event, 'ota')">Update</a></li>
@@ -121,7 +121,7 @@
 
       <div id="race" class="tabcontent">
         <span id="timer">00:00:00 s</span>
-        <p id="fastestlaptime">Fastest Lap Time: --</p>
+        <div id="fastestlaptime">Fastest Lap Time: --</div>
         <div class="racebuttons">
           <button id="startRaceButton" onclick="startRace()">Start Race</button>
           <button id="stopRaceButton" onclick="stopRace()" disabled>Stop Race</button>
