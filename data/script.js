@@ -126,7 +126,11 @@ onload = function (e) {
       var temperatureElem = document.getElementById("temperature");
       const temperatureMatch = response.match(/Temperature:\s*(-?\d+(\.\d+)?)/);
       const temperature = temperatureMatch ? temperatureMatch[1] : null;
-      temperatureElem.innerText = "Temperature: " + temperature + "°C";
+      if (temperature !== null) {
+        temperatureElem.innerText = temperature + "°C";
+      } else {
+        temperatureElem.innerText = "--";
+      }
 
       const lapTimerStateMatch = response.match(/LapTimerState:\s*([\d.])/);
       const lapTimerState = lapTimerStateMatch ? lapTimerStateMatch[1] : null;
