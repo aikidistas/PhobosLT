@@ -57,6 +57,10 @@ var audioEnabled = false;
 var speakObjsQueue = [];
 
 function setLapshistory(lapsHistory) {
+    if (lapsHistory == null) {
+      return;
+    }
+
     let lapTable = document.getElementById('lapTable');
 
     if(lapsHistory.length > 0) {
@@ -381,11 +385,11 @@ function addLap(lapStr) {
   } else {
     cell2.innerHTML = lapStr + " s";
   }
-  if (lapTimes.length >= 2 && lapNo != 0) {
+  if (lapTimes.length >= 2 && lapNo >= 2) {
     last2lapStr = (newLap + lapTimes[lapTimes.length - 1]).toFixed(2);
     cell3.innerHTML = last2lapStr + " s";
   }
-  if (lapTimes.length >= 3 && lapNo != 0) {
+  if (lapTimes.length >= 3 && lapNo >= 3) {
     last3lapStr = (newLap + lapTimes[lapTimes.length - 2] + lapTimes[lapTimes.length - 1]).toFixed(2);
     cell4.innerHTML = last3lapStr + " s";
   }
@@ -512,6 +516,7 @@ function doSpeak(obj) {
 
 async function startRace(beepOn = true) {
   //stopRace();
+  lapNo = -1;
   startRaceButton.disabled = true;
   if(beepOn) {
     queueSpeak('<p>Starting race in less than five</p>');
