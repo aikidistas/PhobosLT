@@ -129,7 +129,7 @@ onload = function (e) {
       if (temperature !== null) {
         temperatureElem.innerText = temperature + "°C";
       } else {
-        temperatureElem.innerText = "--";
+        temperatureElem.innerText = "";
       }
 
       const lapTimerStateMatch = response.match(/LapTimerState:\s*([\d.])/);
