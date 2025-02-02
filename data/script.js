@@ -367,7 +367,7 @@ function addLap(lapStr) {
 
   if (fastestlap.toString() === timelap.toString()) {
       fastestlaptimeElem.innerText = "Fastest Lap Time: " + fastestlap + "s";
-      speakText = "record, " + speakText;
+      speakText = "<div>Record. " + speakText + "</div>";
   }
 
   queueSpeak(speakText);
