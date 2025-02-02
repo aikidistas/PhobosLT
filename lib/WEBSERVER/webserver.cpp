@@ -8,10 +8,6 @@
 
 #include "debug.h"
 
-extern "C" {
-    uint8_t temprature_sens_read();
-}
-
 static const uint8_t DNS_PORT = 53;
 static IPAddress netMsk(255, 255, 255, 0);
 static DNSServer dnsServer;
@@ -258,7 +254,8 @@ void Webserver::startServices() {
         char configBuf[256];
         conf->toJsonString(configBuf);
         float voltage = (float)monitor->getBatteryVoltage() / 10;
-        float temperature = (temprature_sens_read() - 32) / 1.8;
+
+        float temperature = 0.0;
 
         const char *format =
             "\
