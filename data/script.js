@@ -126,7 +126,11 @@ onload = function (e) {
       const batteryVoltageMatch = response.match(/Battery Voltage:\s*([\d.]+v)/);
       const batteryVoltage = batteryVoltageMatch ? batteryVoltageMatch[1] : null;
       if (batteryElem !== null) {
-        batteryElem.innerText = "Battery Voltage: " + batteryVoltage;
+        if (batteryVoltage !== null) {
+          batteryElem.innerText = batteryVoltage;
+        } else {
+          batteryElem.innerText = "--";
+        }
       }
 
       var temperatureElem = document.getElementById("temperature");
