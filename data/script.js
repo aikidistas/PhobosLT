@@ -125,12 +125,16 @@ onload = function (e) {
       var batteryElem = document.getElementById("battery");
       const batteryVoltageMatch = response.match(/Battery Voltage:\s*([\d.]+v)/);
       const batteryVoltage = batteryVoltageMatch ? batteryVoltageMatch[1] : null;
-      batteryElem.innerText = "Battery Voltage: " + batteryVoltage;
+      if (batteryElem !== null) {
+        batteryElem.innerText = "Battery Voltage: " + batteryVoltage;
+      }
 
       var temperatureElem = document.getElementById("temperature");
-      const temperatureMatch = response.match(/Temperature:\s*(-?\d+(\.\d+)?)/);
-      const temperature = temperatureMatch ? temperatureMatch[1] : null;
-      if (temperature !== null) {
+      const temperatureTextMatch = response.match(/Temperature:\s*(-?\d+(\.\d+)?)/);
+      const temperatureText = temperatureTextMatch ? temperatureTextMatch[0] : null;
+      if (temperatureText != null) {
+        const temperatureMatch = temperatureText.match(/(-?\d+(\.\d+)?)/);
+        const temperature = temperatureMatch ? temperatureMatch[0] : null;
         temperatureElem.innerText = temperature + "°C";
       } else {
         temperatureElem.innerText = "";

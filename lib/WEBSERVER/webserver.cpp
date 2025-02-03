@@ -7,6 +7,7 @@
 #include <esp_wifi.h>
 
 #include "debug.h"
+#include "Arduino.h"
 
 static const uint8_t DNS_PORT = 53;
 static IPAddress netMsk(255, 255, 255, 0);
@@ -255,7 +256,7 @@ void Webserver::startServices() {
         conf->toJsonString(configBuf);
         float voltage = (float)monitor->getBatteryVoltage() / 10;
 
-        float temperature = 0.0;
+        float temperature = temperatureRead();
 
         const char *format =
             "\
