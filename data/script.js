@@ -137,7 +137,7 @@ onload = function (e) {
         const temperature = temperatureMatch ? temperatureMatch[0] : null;
         temperatureElem.innerText = temperature + "°C";
       } else {
-        temperatureElem.innerText = "";
+        temperatureElem.innerText = "--";
       }
 
       const lapTimerStateMatch = response.match(/LapTimerState:\s*([\d.])/);
